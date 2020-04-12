@@ -11,53 +11,20 @@ import static java.lang.Math.pow;
 
 public class Server {
 	
-	public static final int PORT = 13013;
+	public static final int PORT = 9091;
 	
 	public static int clientNumber = 0;
 	
 	public static void main(String[] args) {
-		System.out.println("Server Started....");
+		System.out.println("Server Started at Port " + PORT + "....");
 		try {
 			ServerSocket ss = new ServerSocket(PORT);
 			while (true) {
+				System.out.println("here");
 				new TriangleEdgesSolver(ss.accept(), clientNumber++).start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-	
-	private class Point {
-		private double x;
-		private double y;
-		public Point(double x, double y) {
-			this.x = x;
-			this.y = y;
-		}
-		public double getX() { return x; }
-		public double getY() { return x; }
-	}
-	
-	public class Triangle implements Serializable {
-		private Point A;
-		private Point B;
-		private Point C;
-		public Triangle(Point ptA, Point ptB, Point ptC) {
-			A = ptA;
-			B = ptB;
-			C = ptC;
-		}
-		public Point getA() { return A; }
-		public Point getB() { return B; }
-		public Point getC() { return C; }
-		public double getEdge1Length() {
-			return sqrt(pow(A.getX() - B.getX(), (double)2) + pow(A.getY() - B.getY(), (double)2));
-		}
-		public double getEdge2Length() {
-			return sqrt(pow(C.getX() - B.getX(), (double)2) + pow(C.getY() - B.getY(), (double)2));
-		}
-		public double getEdge3Length() {
-			return sqrt(pow(A.getX() - C.getX(), (double)2) + pow(A.getY() - C.getY(), (double)2));
 		}
 	}
 	
@@ -99,6 +66,40 @@ public class Server {
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	public static class Point {
+		private double x;
+		private double y;
+		public Point(double x, double y) {
+			this.x = x;
+			this.y = y;
+		}
+		public double getX() { return x; }
+		public double getY() { return y; }
+	}
+	
+	public static class Triangle implements Serializable {
+		private Point A;
+		private Point B;
+		private Point C;
+		public Triangle(Point ptA, Point ptB, Point ptC) {
+			A = ptA;
+			B = ptB;
+			C = ptC;
+		}
+		public Point getA() { return A; }
+		public Point getB() { return B; }
+		public Point getC() { return C; }
+		public double getEdge1Length() {
+			return sqrt(pow(A.getX() - B.getX(), (double)2) + pow(A.getY() - B.getY(), (double)2));
+		}
+		public double getEdge2Length() {
+			return sqrt(pow(C.getX() - B.getX(), (double)2) + pow(C.getY() - B.getY(), (double)2));
+		}
+		public double getEdge3Length() {
+			return sqrt(pow(A.getX() - C.getX(), (double)2) + pow(A.getY() - C.getY(), (double)2));
 		}
 	}
 }
