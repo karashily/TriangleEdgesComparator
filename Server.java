@@ -11,7 +11,7 @@ import static java.lang.Math.pow;
 
 public class Server {
 	
-	public static final int PORT = 9091;
+	public static final int PORT = 6012;
 	
 	public static int clientNumber = 0;
 	
@@ -20,7 +20,6 @@ public class Server {
 		try {
 			ServerSocket ss = new ServerSocket(PORT);
 			while (true) {
-				System.out.println("here");
 				new TriangleEdgesSolver(ss.accept(), clientNumber++).start();
 			}
 		} catch (IOException e) {
@@ -33,20 +32,20 @@ public class Server {
 		private int clientNumber;
 		
 		public TriangleEdgesSolver (Socket s, int cno) {
-			clientSocket = s;
+			this.clientSocket = s;
 			this.clientNumber = cno;
 		}
-		public void Run() {
-			System.out.println("Connected with Client #" + this.clientNumber);
+		public void run() {
+			System.out.println("Client #" + this.clientNumber + " Connected....");
 			try {
 				PrintWriter out = new PrintWriter(this.clientSocket.getOutputStream(), true);
 				ObjectInputStream in = new ObjectInputStream(this.clientSocket.getInputStream());
-				Triangle t = (Triangle) in.readObject();
+				Triangle t;
 				
-				while (t != null) {
-					int edge1 = (int) t.getEdge1Length();
-					int edge2 = (int) t.getEdge2Length();
-					int edge3 = (int) t.getEdge3Length();
+				while ((t = (Triangle) in.readObject()) != null) {
+					int edge1 = (int) Math.round(t.getEdge1Length());
+					int edge2 = (int) Math.round(t.getEdge2Length());
+					int edge3 = (int) Math.round(t.getEdge3Length());
 					System.out.println("" + edge1 + " " + edge2 + " " + edge3);
 					if(edge1 == edge2 && edge2 == edge3) {
 						out.println("Equilateral");
@@ -57,7 +56,6 @@ public class Server {
 					else {
 						out.println("Scalene");
 					}
-					t = (Triangle) in.readObject();
 				}
 				out.close();
 				in.close();
@@ -69,37 +67,6 @@ public class Server {
 		}
 	}
 	
-	public static class Point {
-		private double x;
-		private double y;
-		public Point(double x, double y) {
-			this.x = x;
-			this.y = y;
-		}
-		public double getX() { return x; }
-		public double getY() { return y; }
-	}
 	
-	public static class Triangle implements Serializable {
-		private Point A;
-		private Point B;
-		private Point C;
-		public Triangle(Point ptA, Point ptB, Point ptC) {
-			A = ptA;
-			B = ptB;
-			C = ptC;
-		}
-		public Point getA() { return A; }
-		public Point getB() { return B; }
-		public Point getC() { return C; }
-		public double getEdge1Length() {
-			return sqrt(pow(A.getX() - B.getX(), (double)2) + pow(A.getY() - B.getY(), (double)2));
-		}
-		public double getEdge2Length() {
-			return sqrt(pow(C.getX() - B.getX(), (double)2) + pow(C.getY() - B.getY(), (double)2));
-		}
-		public double getEdge3Length() {
-			return sqrt(pow(A.getX() - C.getX(), (double)2) + pow(A.getY() - C.getY(), (double)2));
-		}
-	}
+	
 }
